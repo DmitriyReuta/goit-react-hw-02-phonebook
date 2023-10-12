@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  number: Yup.number().required('Phone number is required'),
-});
+import { Filter } from './Filter/Filter';
+import { ContactList } from './ContactList/ContactList';
+import { ContactForm } from './ContactForm/ContactForm';
 
 function generateUniqueId(contacts) {
   return contacts.reduce((maxId, contact) => Math.max(maxId, contact.id), 0) + 1;
@@ -62,42 +58,11 @@ export class App extends Component {
     return (
       <div>
         <h1>Phonebook</h1>
-        <Formik
-          initialValues={{ name: '', number: '' }}
-          validationSchema={validationSchema}
-          onSubmit={this.handleAddContact}
-        >
-          <Form>
-              <Field type="text" name="name" placeholder="Name" />
-              <ErrorMessage name="name" />
-              <Field type="text" name="number" placeholder="Phone Number" />
-              <ErrorMessage name="number" />
-              <button type="submit">Add Contact</button>
-            </Form>
-
-        </Formik>
+        <ContactForm AddContact={this.handleAddContact}/>
 
         <h2>Contacts</h2>
-        <input
-          type="text"
-          placeholder="Search Contacts"
-          value={filter}
-          onChange={this.handleFilterChange}
-        />
-
-        <ul>
-          {filteredContacts.map((contact) => (
-            <li key={contact.id}>
-              {contact.name}: {contact.number}
-              <button
-                type="button"
-                onClick={() => this.handleDeleteContact(contact.id)}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
+       <Filter filter={filter} onChange={this.handleFilterChange}/>
+       <ContactList contacts={filteredContacts} DeleteContact={this.handleDeleteContact}/>
       </div>
     );
   }
